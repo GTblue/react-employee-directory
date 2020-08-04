@@ -2,30 +2,36 @@ import React, { Component } from "react";
 import axios from "axios";
 
 class Search extends Component {
+
   state = {
-    employees: [{
+    sortAsc: true,
+
+    employees: [
+    {
       id:"",
       picture:"",
       name:"",
       cell:"",
       email:"",
       dob:"",
-    }],  
-  };
+    }
+  ],  
+};
 
-  // When the component mounts, get a list of all available base breeds and update this.state.breeds
+  // When the component mounts, get a list of all available base employees
   componentDidMount() {
-    axios
-      .get("https://randomuser.me/api/?results=100")
-      .then((response) => {
-        console.log(response.data);
-        this.setState({
-          results: response.data.message,
-        });
-      })
-      .catch((err) => {
-        console.log(err)
-      });
+    this.sortedEmployees
+    // axios
+    //   .get("https://randomuser.me/api/?results=100")
+    //   .then((response) => {
+    //     console.log(response.data);
+    //     this.setState({
+    //       results: response.data.message,
+    //     });
+    //   })
+    //   .catch((err) => {
+    //     console.log(err)
+    //   });
   }
 
   handleInputChange = event => {
@@ -36,19 +42,35 @@ class Search extends Component {
 
   };
 
-  sortEmployeesByName = () => {
-    function compare(a, b) {
-      if(a.employee_name > b.employee_name) return 1;
-      if(b.employee_name > a.employee_name) return -1;
+
+  sortEmployees = (field) => {
+    function compareAsc(a, b) {
+      if(a[field] > b.[field]) return 1;
+      if(b.[field] > a.[field]) return -1;
 
       return 0
     }
 
-    const sortedEmployees= this.state.employees.sort(compare);
+    function compareDesc(a, b) {
+      if(a[field] > b.[field]) return -1;
+      if(b.[field] > a.[field]) return 1;
 
-    this.setState({
-      employees: sortedEmployees,
-    });
+      return 0
+    }
+
+    if{this.state.sortAsc} {
+      const sortedEmployees= this.state.employees.sort(compare);
+      this.setState({
+        employees: sortedEmployees,
+        sortAsc: false
+      });
+    }else{
+      const sortedEmployees= this.state.employees.sort(compare);
+      this.setState({
+        employees: sortedEmployees,
+        sortAsc: true
+      });
+    };
   };
 
   render() {
@@ -59,12 +81,18 @@ class Search extends Component {
           <table className="table">
             <thead className="thead-dark">
               <tr>
-                <th scope="col">ID</th>
+                <th scope="col" onClick={() => {this.sortEmployees("employees.id")}}>
+                  <button className="btn btn-dark">ID</button>
+                </th>
                 <th scope="col">Picture</th>
-                <th scope="col">Name</th>
+                <th scope="col" onClick={() => {this.sortEmployees("employees.name")}}>
+                  <button className="btn btn-dark">Name</button>
+                </th>
                 <th scope="col">Cell</th>
                 <th scope="col">Email</th>
-                <th scope="col">Age</th>
+                <th scope="col" onClick={() => {this.sortEmployees("employees.dob")}}>
+                  <button className="btn btn-dark">Age</button>
+                </th>
               </tr>
             </thead>
             <tbody>
